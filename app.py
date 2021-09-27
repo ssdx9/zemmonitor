@@ -5,8 +5,10 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+# import dash_core_components as dcc # deprecated
+# import dash_html_components as html # deprecated
+from dash import dcc
+from dash import html
 
 app = dash.Dash(__name__)
 url = "http://seis-bykl.ru/index.php?ma=1"
