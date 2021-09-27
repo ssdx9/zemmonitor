@@ -8,7 +8,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 
-
+app = dash.Dash(__name__)
 url = "http://seis-bykl.ru/index.php?ma=1"
 r = requests.get(url)
 r.encoding = r.apparent_encoding # проверка содержимого на кодировку и переключение на неё
@@ -49,7 +49,7 @@ fig=px.scatter_mapbox(df,
     title='Карта эпицентров последних десяти землетрясений'
     )  
 
-app = dash.Dash()
+
 app.layout = html.Div([
     dcc.Graph(figure=fig,
         style={'height': 700
