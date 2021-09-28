@@ -11,6 +11,8 @@ from dash import dcc
 from dash import html
 
 app = dash.Dash(__name__)
+server = app.server
+
 url = "http://seis-bykl.ru/index.php?ma=1"
 r = requests.get(url)
 r.encoding = r.apparent_encoding # проверка содержимого на кодировку и переключение на неё
