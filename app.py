@@ -53,13 +53,29 @@ fig=px.scatter_mapbox(df,
     title='Карта эпицентров последних десяти землетрясений'
     )  
 
+colors = {'background': '#111111','text': '#7FDBFF'}
 
-""" app.layout = html.Div([
+fig.update_layout(
+    plot_bgcolor=colors['background'],
+    paper_bgcolor=colors['background'],
+    font_color=colors['text'],
+    margin=dict(t=20, b=20, l=20, r=20),
+)
+
+# dcc.Graph(figure=fig)
+app.layout = html.Div(
+    style={'backgroundColor': colors['background']}, children=[
+    html.H1(children='Монитор сейсмической активности на Байкале',
+        style={'textAlign': 'center', 'color': colors['text']}), 
+    html.Div(children='Последние десять землетрясений', 
+        style={'textAlign': 'center', 'color': colors['text']}),
+
     dcc.Graph(figure=fig,
-        style={'height': 700
-        }),    
-]) """
-
+    # style = dict(height = 600),
+    responsive=True,
+    style={"min-height":"0","flex-grow":"1"},    
+    )
+])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
