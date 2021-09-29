@@ -48,9 +48,9 @@ fig=px.scatter_mapbox(df,
     center={'lat':54,'lon':109},   
     zoom=5,
     hover_name='affect',
+    hover_data={'K' : False},
     # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
-    title='Карта эпицентров последних десяти землетрясений'
     )  
 
 colors = {'background': '#111111','text': '#7FDBFF'}
@@ -71,9 +71,9 @@ app.layout = html.Div(
         style={'textAlign': 'center', 'color': colors['text']}),
 
     dcc.Graph(figure=fig,
-    # style = dict(height = 600),
-    responsive=True,
-    style={"min-height":"0","flex-grow":"1"},    
+    style = dict(height = 600),
+    # responsive=True,
+    # style={"min-height":"0","flex-grow":"1"},    
     )
 ])
 
