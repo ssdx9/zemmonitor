@@ -54,11 +54,11 @@ fig=px.scatter_mapbox(df,
     )  
 
 
-app.layout = html.Div([
+""" app.layout = html.Div([
     dcc.Graph(figure=fig,
         style={'height': 700
         }),    
-])
+]) """
 
 
 if __name__ == '__main__':
