@@ -18,14 +18,14 @@ soup = BeautifulSoup(r.text, "html.parser") # создаем whole-doc-объе�
 
 # Скрапинг через ховеры:
 areas = soup.map.find_all('area') # достаем всё содержимое по тегу area
-df={'Дата':[],'Время':[],'lat':[],'lon':[],'Класс':[],'Ks':[], 'affect':[]} # заготовка словаря под датафрейм
+df={'date':[],'time':[],'lat':[],'lon':[],'K':[],'Ks':[], 'affect':[]} # заготовка словаря под датафрейм
 for area in areas: #в каждом элементе списка    
     gottitle = area['title'] #находим string title (это не attr!)
-    df['Дата'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
-    df['Время'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
+    df['date'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
+    df['time'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
     df['lat'].extend(re.findall(r"\b\d{2}[.]\d{2}", gottitle))
     df['lon'].extend(re.findall(r"\b\d{3}[.]\d{2}", gottitle))
-    df['Класс'].extend(re.findall(r"\d{1,2}[.]\d{1}\b", gottitle))   
+    df['K'].extend(re.findall(r"\d{1,2}[.]\d{1}\b", gottitle))   
     Ks = re.findall(r"\d{1,2}[.]\d{1}\b", gottitle) # получаем K
     Ks = int(((float(Ks[0])-8.6)**2)*10000) # подбираем размерность для size    
     NN = []
@@ -47,8 +47,8 @@ fig=px.scatter_mapbox(df,
     center={'lat':54,'lon':109},   
     zoom=5,
     hover_name='affect',
-    hover_data={'lat' : False, 'lon' : False, 'Ks' : False, 
-                'Дата' : True, 'Время' : True, 'Класс' : True},    
+    hover_data={'lat' : True, 'lon' : True, 'K' : True, 
+                'Ks' : False},    
     # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
     )  
@@ -57,20 +57,28 @@ n=0
 annx=0.01
 anny=0.93
 op=0.9
-for n in range(10):    
+for n in range(10):
+    dfdatetime=datetime.strptime((str(df['date'][n]) + ',' + str(df['time'][n])), "%Y-%m-%d,%H:%M:%S") 
+    dfdatetime=dfdatetime+timedelta(hours=8)      
     fig.add_annotation(xref="paper", yref="paper",
                 x=annx, y=anny,
-                showarrow=False,                
-                text = df['Дата'][n] + " " + df['Время'][n] + " Класс: " + df['Класс'][n] + " " + df['affect'][n],
+                showarrow=False,
+                # text = 'Custom text {}'.format(df['date'][n]),
+                text = str(dfdatetime.day) + " " 
+                    + str(dfdatetime.strftime("%b")) + " "
+                    + str(dfdatetime.strftime("%X")) + " "
+                    + " Класс: " 
+                    + df['K'][n] + " "
+                    + df['affect'][n],
+                # text="<b>Запись 1: %'text' %text</b>",
                 font=dict(family="Arial",
-                    size=14,
+                    size=12,
                     color="#ffffff"),
                 align="left",
                 # bordercolor="#c7c7c7",
                 # borderwidth=2,
                 borderpad=4,
                 bgcolor="#000000",
-                # bgcolor="#808080",
                 opacity=op,
                 xanchor='left',
                 yanchor='bottom',
@@ -78,8 +86,13 @@ for n in range(10):
     anny=round(anny-0.05,2)
     op=round(op-0.05,2)
 
-    
-colors = {'background': '#111111','text': '#7FDBFF'}
+
+colors = {
+    'background': '#111111',
+    # 'background': '#708090',
+    'text': '#A9A9A9',
+    # 'text': '#C0C0C0',
+}
 
 fig.update_layout(
     plot_bgcolor=colors['background'],
@@ -88,12 +101,12 @@ fig.update_layout(
     margin=dict(t=20, b=20, l=20, r=20),
 )
 
-# dcc.Graph(figure=fig)
+app = dash.Dash()
 app.layout = html.Div(
     style={'backgroundColor': colors['background']}, children=[
     html.H1(children='Монитор сейсмической активности на Байкале',
         style={'textAlign': 'center', 'color': colors['text']}), 
-    html.Div(children='Последние десять землетрясений', 
+    html.Div(children='Сайт находится в режиме разработки', 
         style={'textAlign': 'center', 'color': colors['text']}),
 
     dcc.Graph(figure=fig,
