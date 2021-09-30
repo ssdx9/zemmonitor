@@ -20,18 +20,19 @@ soup = BeautifulSoup(r.text, "html.parser") # создаем whole-doc-объе�
 
 # Скрапинг через ховеры:
 areas = soup.map.find_all('area') # достаем всё содержимое по тегу area
-df={'date':[],'time':[],'lat':[],'lon':[],'K':[], 'affect':[]} # заготовка словаря под датафрейм
+df={'Дата':[],'Время':[],'lat':[],'lon':[],'Класс':[],'Ks':[], 'affect':[]} # заготовка словаря под датафрейм
 for area in areas: #в каждом элементе списка    
     gottitle = area['title'] #находим string title (это не attr!)
-    df['date'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
-    df['time'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
+    df['Дата'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
+    df['Время'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
     df['lat'].extend(re.findall(r"\b\d{2}[.]\d{2}", gottitle))
-    df['lon'].extend(re.findall(r"\b\d{3}[.]\d{2}", gottitle))    
-    KK = re.findall(r"\d{1,2}[.]\d{1}\b", gottitle) # получаем K    
-    KK = int(((float(KK[0])-8.6)**2)*10000) # подбираем размерность для size    
+    df['lon'].extend(re.findall(r"\b\d{3}[.]\d{2}", gottitle))
+    df['Класс'].extend(re.findall(r"\d{1,2}[.]\d{1}\b", gottitle))   
+    Ks = re.findall(r"\d{1,2}[.]\d{1}\b", gottitle) # получаем K
+    Ks = int(((float(Ks[0])-8.6)**2)*10000) # подбираем размерность для size    
     NN = []
-    NN.append(KK)    
-    df['K'].extend(NN)
+    NN.append(Ks)    
+    df['Ks'].extend(NN)
     ll = []
     ll = re.findall(r"[А-Яа-я].+$", gottitle) # из-за того, что size только int и str
     ll.extend([' '])
@@ -40,7 +41,7 @@ for area in areas: #в каждом элементе списка
 
 fig=px.scatter_mapbox(df, 
     lat='lat', lon='lon',
-    size='K', 
+    size='Ks', 
     size_max=60,
     # color='K', 
     color_discrete_sequence=["red"],
@@ -48,7 +49,9 @@ fig=px.scatter_mapbox(df,
     center={'lat':54,'lon':109},   
     zoom=5,
     hover_name='affect',
-    hover_data={'K' : False},
+    hover_data={'lat' : False, 'lon' : False, 'Ks' : False, 
+                'Дата' : True, 'Время' : True, 'Класс' : True},
+    
     # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
     )  
