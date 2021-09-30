@@ -5,8 +5,6 @@ from bs4 import BeautifulSoup
 import requests
 import re
 import dash
-# import dash_core_components as dcc # deprecated
-# import dash_html_components as html # deprecated
 from dash import dcc
 from dash import html
 
@@ -50,12 +48,37 @@ fig=px.scatter_mapbox(df,
     zoom=5,
     hover_name='affect',
     hover_data={'lat' : False, 'lon' : False, 'Ks' : False, 
-                'Дата' : True, 'Время' : True, 'Класс' : True},
-    
+                'Дата' : True, 'Время' : True, 'Класс' : True},    
     # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
     )  
 
+n=0
+annx=0.01
+anny=0.93
+op=0.9
+for n in range(10):    
+    fig.add_annotation(xref="paper", yref="paper",
+                x=annx, y=anny,
+                showarrow=False,                
+                text = df['Дата'][n] + " " + df['Время'][n] + " Класс: " + df['Класс'][n] + " " + df['affect'][n],
+                font=dict(family="Arial",
+                    size=14,
+                    color="#ffffff"),
+                align="left",
+                # bordercolor="#c7c7c7",
+                # borderwidth=2,
+                borderpad=4,
+                bgcolor="#000000",
+                # bgcolor="#808080",
+                opacity=op,
+                xanchor='left',
+                yanchor='bottom',
+                )
+    anny=round(anny-0.05,2)
+    op=round(op-0.05,2)
+
+    
 colors = {'background': '#111111','text': '#7FDBFF'}
 
 fig.update_layout(
