@@ -102,7 +102,6 @@ fig.update_layout(
     margin=dict(t=20, b=20, l=20, r=20),
 )
 
-app = dash.Dash()
 app.layout = html.Div(
     style={'backgroundColor': colors['background']}, children=[
     html.H1(children='Монитор сейсмической активности на Байкале',
