@@ -1,6 +1,5 @@
 #zemmonitor dash 1
 import plotly.express as px
-import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import re
@@ -8,6 +7,7 @@ import dash
 from dash import dcc
 from dash import html
 from datetime import datetime, timedelta
+import plotly.graph_objs as go
 
 app = dash.Dash(__name__)
 server = app.server
@@ -53,6 +53,17 @@ fig=px.scatter_mapbox(df,
     # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
     )  
+
+fig.add_trace(go.Scattermapbox(
+        lat=[df['lat'][0]],
+        lon=[df['lon'][0]],
+        mode='markers',
+        marker=go.scattermapbox.Marker(size=15, color='yellow'),
+        text=['Montreal'],
+        showlegend=False,
+        hoverinfo='text',
+        hovertext='Последнее землетрясение',
+))
 
 n=0
 annx=0.01
