@@ -38,65 +38,51 @@ for area in areas: #в каждом элементе списка
     ls = ["".join(ll)]
     df['affect'].extend(ls)     
 
-fig=px.scatter_mapbox(df, 
-    lat='lat', lon='lon',
-    size='Ks', 
-    size_max=60,
-    # color='K', 
-    color_discrete_sequence=["red"],
-    opacity=0.5,
+fig=px.scatter_mapbox(
     center={'lat':54,'lon':109},   
     zoom=5,
-    hover_name='affect',
-    hover_data={'lat' : True, 'lon' : True, 'K' : True, 
-                'Ks' : False},    
-    # mapbox_style="open-street-map",
     mapbox_style="stamen-terrain",
-    )  
+    ) 
 
-fig.add_trace(go.Scattermapbox(
-        lat=[df['lat'][0]],
-        lon=[df['lon'][0]],
+for i in range(9,-1,-1):
+    dfdatetime=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") 
+    dfdatetime=dfdatetime+timedelta(hours=8)
+    if i==0:
+        textif='Последнее землетрясение<br>Дата: {} <br>Время: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+            df['date'][i],df['time'][i],df['K'][i],df['lat'][i],df['lon'][i],
+            (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ),
+    else:
+        textif='Дата: {} <br>Время: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+            df['date'][i],df['time'][i],df['K'][i],df['lat'][i],df['lon'][i],
+            (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ), 
+    fig.add_trace(go.Scattermapbox(
+        lat=[df['lat'][i]],
+        lon=[df['lon'][i]],
         mode='markers',
-        marker=go.scattermapbox.Marker(size=15, color='yellow'),
-        text=['Montreal'],
-        showlegend=False,
-        hoverinfo='text',
-        hovertext='Последнее землетрясение',
+        text=textif,
+        # hoverinfo=('text' if i!=0 else 'none'),
+        hoverinfo=('text'),
+        hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },
+        # marker=go.scattermapbox.Marker(size=((float(df['K'][i])-9)*30), color='red', opacity=0.5,),
+        marker=go.scattermapbox.Marker(size=((float(df['K'][i])-8)*20), color=('red' if i!=0 else 'yellow' ), opacity=(0.5 if i!=0 else 0.9),),        
+        name= str(dfdatetime.day) + " "  
+                + str(dfdatetime.strftime("%b")) + " "
+                + str(dfdatetime.strftime("%X")) + " "
+                + " Класс: " 
+                + df['K'][i] + " ",
 ))
 
-n=0
-annx=0.01
-anny=0.93
-op=0.9
-for n in range(10):
-    dfdatetime=datetime.strptime((str(df['date'][n]) + ',' + str(df['time'][n])), "%Y-%m-%d,%H:%M:%S") 
-    dfdatetime=dfdatetime+timedelta(hours=8)      
-    fig.add_annotation(xref="paper", yref="paper",
-                x=annx, y=anny,
-                showarrow=False,
-                # text = 'Custom text {}'.format(df['date'][n]),
-                text = str(dfdatetime.day) + " " 
-                    + str(dfdatetime.strftime("%b")) + " "
-                    + str(dfdatetime.strftime("%X")) + " "
-                    + " Класс: " 
-                    + df['K'][n] + " "
-                    + df['affect'][n],
-                # text="<b>Запись 1: %'text' %text</b>",
-                font=dict(family="Arial",
-                    size=12,
-                    color="#ffffff"),
-                align="left",
-                # bordercolor="#c7c7c7",
-                # borderwidth=2,
-                borderpad=4,
-                bgcolor="#000000",
-                opacity=op,
-                xanchor='left',
-                yanchor='bottom',
-                )
-    anny=round(anny-0.05,2)
-    op=round(op-0.05,2)
+fig.update_layout(
+    legend_itemclick="toggleothers", legend_itemdoubleclick="toggle",
+    legend_bgcolor="#000000", 
+    font=dict(family="Arial", size=14, color="#ffffff"), #шрифт в легенде    
+    legend=dict(
+    yanchor="top",
+    y=0.99,
+    xanchor="left",
+    x=0.01),   
+    legend_traceorder="reversed",
+    )
 
 
 colors = {
