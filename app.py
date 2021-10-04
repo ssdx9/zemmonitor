@@ -44,30 +44,33 @@ fig=px.scatter_mapbox(
     mapbox_style="stamen-terrain",
     ) 
 
+# Поочередное нанесение отдельного маркера с отдельной легендой
 for i in range(9,-1,-1):
-    dfdatetime=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") 
-    dfdatetime=dfdatetime+timedelta(hours=8)
+    dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") 
+    dfdt=dfdt+timedelta(hours=8)
+    tddt=datetime.today().date()    
     if i==0:
-        textif='Последнее землетрясение<br>Дата: {} <br>Время: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
-            df['date'][i],df['time'][i],df['K'][i],df['lat'][i],df['lon'][i],
+        textif='Последнее землетрясение<br>Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+            (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))),
+            (df['date'][i] + ' ' + df['time'][i]),
+            df['K'][i],df['lat'][i],df['lon'][i],
             (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ),
     else:
-        textif='Дата: {} <br>Время: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
-            df['date'][i],df['time'][i],df['K'][i],df['lat'][i],df['lon'][i],
+        textif='Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+            (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))),
+            (df['date'][i] + ' ' + df['time'][i]),
+            df['K'][i],df['lat'][i],df['lon'][i],
             (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ), 
     fig.add_trace(go.Scattermapbox(
         lat=[df['lat'][i]],
         lon=[df['lon'][i]],
         mode='markers',
         text=textif,
-        # hoverinfo=('text' if i!=0 else 'none'),
         hoverinfo=('text'),
-        hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },
-        # marker=go.scattermapbox.Marker(size=((float(df['K'][i])-9)*30), color='red', opacity=0.5,),
+        hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },        
         marker=go.scattermapbox.Marker(size=((float(df['K'][i])-8)*20), color=('red' if i!=0 else 'yellow' ), opacity=(0.5 if i!=0 else 0.9),),        
-        name= str(dfdatetime.day) + " "  
-                + str(dfdatetime.strftime("%b")) + " "
-                + str(dfdatetime.strftime("%X")) + " "
+        name= ('Сегодня' if tddt==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
+                + str(dfdt.strftime("%X")) + " "
                 + " Класс: " 
                 + df['K'][i] + " ",
 ))
