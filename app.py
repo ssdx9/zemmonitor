@@ -72,18 +72,6 @@ for i in range(9,-1,-1):
                 + df['K'][i] + " ",
 ))
 
-fig.update_layout(
-    legend_itemclick="toggleothers", legend_itemdoubleclick="toggle",
-    legend_bgcolor="#000000", 
-    font=dict(family="Arial", size=14, color="#ffffff"), #шрифт в легенде    
-    legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01),   
-    legend_traceorder="reversed",
-    )
-
 
 colors = {
     'background': '#111111',
@@ -98,6 +86,18 @@ fig.update_layout(
     font_color=colors['text'],
     margin=dict(t=20, b=20, l=20, r=20),
 )
+
+fig.update_layout(
+    legend_itemclick="toggleothers", legend_itemdoubleclick="toggle",
+    legend_bgcolor="#000000", 
+    font=dict(family="Arial", size=14, color="#ffffff"), #шрифт в легенде    
+    legend=dict(
+    yanchor="top",
+    y=0.99,
+    xanchor="left",
+    x=0.01),   
+    legend_traceorder="reversed",
+    )
 
 app.layout = html.Div(
     style={'backgroundColor': colors['background']}, children=[
