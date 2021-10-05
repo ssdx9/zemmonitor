@@ -81,13 +81,6 @@ for i in range(9,-1,-1): # в обратном порядке для того, �
                 + df['K'][i] + " ",
     ))
 
-fig.add_trace(go.Scattermapbox(
-        lat=[54],
-        lon=[109],
-        mode='markers+text',
-        text='test_text',        
-        marker=go.scattermapbox.Marker(size=15, color='blue'),
-))
 
 # переменные цвета
 colors = {
