@@ -53,7 +53,7 @@ fig=px.scatter_mapbox(
 for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
     dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") # расшифровка в формат datetime
     dfdt=dfdt+timedelta(hours=sht) # смещение для проверки местной текущей даты
-    tddt=datetime.today().date()+timedelta(hours=sht) # переменная текущей даты
+    tddt=datetime.today()+timedelta(hours=sht) # переменная текущей даты
     if i==0: # содержимое hover для последнего события (лучше переделать в template)
         textif='Последнее землетрясение<br>Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
             (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
@@ -77,7 +77,7 @@ for i in range(9,-1,-1): # в обратном порядке для того, �
                                         color=('red' if i!=0 else 'yellow' ), 
                                         opacity=(0.5 if i!=0 else 0.9),),
         # блок нужно оптимизировать        
-        name=('Сегодня' if tddt==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
+        name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
                 + str(dfdt.strftime("%X")) + " "
                 + " Класс: " 
                 + df['K'][i] + " ",
@@ -125,7 +125,7 @@ app.layout = html.Div(
     )
 ])
 
-# Время сервера
+""" # Время сервера
 fig.add_annotation(xref="paper", yref="paper",
             x=0, y=0,
             showarrow=False,
@@ -139,7 +139,8 @@ fig.add_annotation(xref="paper", yref="paper",
             opacity=0.8,
             xanchor='left',
             yanchor='bottom',
-            )
+            ) """
+
 
 if __name__ == '__main__': # необходимо для heroku
     app.run_server(debug=True) # необходимо для dash
