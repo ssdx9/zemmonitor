@@ -13,6 +13,8 @@ import plotly.graph_objs as go
 app = dash.Dash(__name__)
 server = app.server
 
+sht=8 # переменная смещения времени
+
 # Парсинг данных со старого сайта
 url = "http://seis-bykl.ru/index.php?ma=1"
 r = requests.get(url)
@@ -50,8 +52,8 @@ fig=px.scatter_mapbox(
 # Поочередное нанесение отдельного маркера с отдельной легендой
 for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
     dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") # расшифровка в формат datetime
-    dfdt=dfdt+timedelta(hours=8) # смещение в местное время
-    tddt=datetime.today().date() # переменная текущей даты
+    dfdt=dfdt+timedelta(hours=sht) # смещение для проверки местной текущей даты
+    tddt=datetime.today().date()+timedelta(hours=sht) # переменная текущей даты
     if i==0: # содержимое hover для последнего события (лучше переделать в template)
         textif='Последнее землетрясение<br>Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
             (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
