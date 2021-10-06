@@ -123,5 +123,21 @@ app.layout = html.Div(
     )
 ])
 
+# Время сервера
+fig.add_annotation(xref="paper", yref="paper",
+            x=0, y=0,
+            showarrow=False,
+            text = 'Текущее время сервера: ' + str(datetime.today()),
+            font=dict(family="Arial",
+                size=12,
+                color="#ffffff"),
+            align="left",
+            borderpad=4,
+            bgcolor="blue",
+            opacity=0.8,
+            xanchor='left',
+            yanchor='bottom',
+            )
+
 if __name__ == '__main__': # необходимо для heroku
     app.run_server(debug=True) # необходимо для dash
