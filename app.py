@@ -73,7 +73,7 @@ for i in range(9,-1,-1): # в обратном порядке для того, �
     fig.add_trace(go.Scattermapbox(
         lat=[df['lat'][i]],
         lon=[df['lon'][i]],
-        mode='markers+text',
+        mode='markers',
         text=textif,
         hoverinfo=('text'),
         hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
