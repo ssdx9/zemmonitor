@@ -8,12 +8,17 @@ from dash import dcc
 from dash import html
 from datetime import datetime, timedelta
 import plotly.graph_objs as go
+import os
 
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
 server = app.server
+mapbox_token = os.environ.get('mapbox_token')
+
 
 sht=8 # переменная смещения времени
+
+token = open(".mapbox_token").read()
 
 # Парсинг данных со старого сайта
 url = "http://seis-bykl.ru/index.php?ma=1"
@@ -46,8 +51,10 @@ for area in areas: #в каждом элементе списка
 fig=px.scatter_mapbox(
     center={'lat':54,'lon':109},   
     zoom=5,
-    mapbox_style="stamen-terrain",
+    # mapbox_style="stamen-terrain",
     ) 
+
+fig.update_layout(mapbox_style="satellite", mapbox_accesstoken=mapbox_token)
 
 # Поочередное нанесение отдельного маркера с отдельной легендой
 for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
