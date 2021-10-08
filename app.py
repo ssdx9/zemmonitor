@@ -15,10 +15,7 @@ app = dash.Dash(__name__)
 server = app.server
 mapbox_token = os.environ.get('mapbox_token')
 
-
 sht=8 # переменная смещения времени
-
-token = open(".mapbox_token").read()
 
 # Парсинг данных со старого сайта
 url = "http://seis-bykl.ru/index.php?ma=1"
