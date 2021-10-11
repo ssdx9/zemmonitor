@@ -9,11 +9,13 @@ from dash import html
 from datetime import datetime, timedelta
 import plotly.graph_objs as go
 import os
+import pandas as pd
 
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
 server = app.server
-mapbox_token = os.environ.get('mapbox_token')
+mapbox_token = os.environ.get('mapbox_token') # из переменной среды
+# mapbox_token = open(".mapbox_token").read() # локально
 
 sht=8 # переменная смещения времени
 
@@ -50,8 +52,25 @@ fig=px.scatter_mapbox(
     zoom=5,
     # mapbox_style="stamen-terrain",
     ) 
-
 fig.update_layout(mapbox_style="satellite", mapbox_accesstoken=mapbox_token)
+
+# Слой населенных пунктов
+dfcities = pd.read_excel("cities.xls")
+for l in range(len(dfcities)-1,-1,-1): # обратное нанесение, чтобы начальные пункты оказались поверх
+    fig.add_trace(go.Scattermapbox(
+        lat=[dfcities['lat'][l]],
+        lon=[dfcities['lon'][l]],
+        mode='markers+text',
+        text=dfcities['name'][l],
+        textposition="top center",
+        textfont=dict(
+            family="sans serif",
+            size=dfcities['sign'][l],
+            color="white"
+        ),
+        hoverinfo='none', showlegend=False,
+        marker=go.scattermapbox.Marker(size=dfcities['sign'][l], color='black', opacity=1),
+    ))
 
 # Поочередное нанесение отдельного маркера с отдельной легендой
 for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
