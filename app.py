@@ -13,7 +13,7 @@ import pandas as pd
 import locale
 
 # Локализация 
-locale.setlocale(locale.LC_ALL, "ru") 
+# locale.setlocale(locale.LC_ALL, "ru") 
 
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
