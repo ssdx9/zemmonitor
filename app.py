@@ -133,7 +133,7 @@ fig.update_layout(
     font=dict(family="Arial", size=14, color="#ffffff"), #шрифт в легенде    
     legend=dict(
     yanchor="top",
-    y=0.95,
+    y=0.92,
     xanchor="left",
     x=0.01),   
     legend_traceorder="reversed",
@@ -141,13 +141,13 @@ fig.update_layout(
 
 # строка про местное время
 fig.add_annotation(xref="paper", yref="paper",
-            x=0.01, y=0.953,
+            x=0.01, y=0.92,
             showarrow=False,
-            text = 'по местному времени Иркутска и Улан-Удэ (GMT+8)',
+            text = 'По местному времени Иркутска и Улан-Удэ (GMT+8):',
             font=dict(family="Arial", size=14, color="#ffffff"),
             align="left",
             borderpad=4,
-            bgcolor="#111111",
+            bgcolor="#000000",
             opacity=1.0,
             xanchor='left',
             yanchor='bottom',
