@@ -162,7 +162,7 @@ app.layout = html.Div(
     style={'backgroundColor': colors['background']}, children=[
     html.H1(children='Монитор сейсмической активности на Байкале',
         style={'textAlign': 'center', 'color': colors['text']}), 
-    html.Div(children='Сайт находится в режиме разработки', 
+    html.Div(children=['Данный сайт не является официальным источником информации. Официальная информация геофизической службы представлена по адресу: ', html.A('seis-bykl.ru', href='http://seis-bykl.ru/index.php', target='_blank')], 
         style={'textAlign': 'center', 'color': colors['text']}),
 
     dcc.Graph(figure=fig,
