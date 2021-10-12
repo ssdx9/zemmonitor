@@ -130,12 +130,28 @@ fig.update_layout(
 fig.update_layout(
     legend_itemclick="toggleothers", legend_itemdoubleclick="toggle",
     legend_bgcolor="#000000", 
-    font=dict(family="Arial", size=14, color="#ffffff"), 
+    font=dict(family="Arial", size=14, color="#ffffff"), #шрифт в легенде    
     legend=dict(
-        yanchor="top", y=0.99,
-        xanchor="left", x=0.01),   
-    legend_traceorder="reversed", # обратный порядок, чтобы последнее размещаемое (поверх) событие было первым в легенде (как самое актуальное)
+    yanchor="top",
+    y=0.95,
+    xanchor="left",
+    x=0.01),   
+    legend_traceorder="reversed",
     )
+
+# строка про местное время
+fig.add_annotation(xref="paper", yref="paper",
+            x=0.01, y=0.953,
+            showarrow=False,
+            text = 'по местному времени Иркутска и Улан-Удэ (GMT+8)',
+            font=dict(family="Arial", size=14, color="#ffffff"),
+            align="left",
+            borderpad=4,
+            bgcolor="#111111",
+            opacity=1.0,
+            xanchor='left',
+            yanchor='bottom',
+            )
 
 # макет страницы; требуется добавление стиля css (отдельный файл в директории) для настройки общего фона страницы в браузере
 app.layout = html.Div(
