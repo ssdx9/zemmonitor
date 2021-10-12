@@ -10,6 +10,10 @@ from datetime import datetime, timedelta
 import plotly.graph_objs as go
 import os
 import pandas as pd
+import locale
+
+# Локализация 
+locale.setlocale(locale.LC_ALL, "ru") 
 
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
