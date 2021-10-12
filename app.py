@@ -17,6 +17,8 @@ server = app.server
 mapbox_token = os.environ.get('mapbox_token') # из переменной среды
 # mapbox_token = open(".mapbox_token").read() # локально
 
+app.title = "Монитор землетрясений"
+
 sht=8 # переменная смещения времени
 
 # Парсинг данных со старого сайта
