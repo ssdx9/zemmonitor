@@ -18,8 +18,8 @@ locale.setlocale(locale.LC_ALL, "ru")
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
 server = app.server
-# mapbox_token = os.environ.get('mapbox_token') # из переменной среды
-mapbox_token = open(".mapbox_token").read() # локально
+mapbox_token = os.environ.get('mapbox_token') # из переменной среды
+# mapbox_token = open(".mapbox_token").read() # локально
 
 app.title = "Монитор землетрясений"
 
