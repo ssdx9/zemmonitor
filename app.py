@@ -38,8 +38,9 @@ for area in areas: #в каждом элементе списка
     gottitle = area['title'] #находим string title (это не attr!)
     df['date'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
     df['time'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
-    df['lat'].extend(re.findall(r"\b\d{2}[.]\d{2}", gottitle))
-    df['lon'].extend(re.findall(r"\b\d{3}[.]\d{2}", gottitle))
+    coords = re.findall(r"\b\d{2,}[.]\d{2,}\b", gottitle)
+    df['lat'].append(coords[0])
+    df['lon'].append(coords[1])
     df['K'].extend(re.findall(r"\d{1,2}[.]\d{1}\b", gottitle))   
     Ks = re.findall(r"\d{1,2}[.]\d{1}\b", gottitle) # получаем K
     Ks = int(((float(Ks[0])-8.6)**2)*10000) # подбираем размерность для size    
@@ -90,6 +91,7 @@ for i in range(9,-1,-1): # в обратном порядке для того, �
             df['K'][i],df['lat'][i],df['lon'][i],
             (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ),
     else: # содержимое hover для остальных событий
+        print('i: ', i, "df", df) ############################################ ОТЛАДКА
         textif='Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
             (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
             (df['date'][i] + ' ' + df['time'][i]), # Гринвич
