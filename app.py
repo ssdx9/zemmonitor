@@ -55,8 +55,8 @@ for area in areas: #в каждом элементе списка
 
 # Отрисовка пустой карты
 fig=px.scatter_mapbox(
-    center={'lat':54,'lon':109},   
-    zoom=5,
+    center={'lat':54,'lon':108},   
+    zoom=4.7,
     # mapbox_style="stamen-terrain",
     ) 
 fig.update_layout(mapbox_style="satellite", mapbox_accesstoken=mapbox_token)
