@@ -79,39 +79,55 @@ for l in range(len(dfcities)-1,-1,-1): # обратное нанесение, ч
         marker=go.scattermapbox.Marker(size=dfcities['sign'][l], color='black', opacity=1),
     ))
 
-# Поочередное нанесение отдельного маркера с отдельной легендой
-for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
-    dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") # расшифровка в формат datetime
-    dfdt=dfdt+timedelta(hours=sht) # смещение для проверки местной текущей даты
-    tddt=datetime.today()+timedelta(hours=sht) # переменная текущей даты
-    if i==0: # содержимое hover для последнего события (лучше переделать в template)
-        textif='Последнее землетрясение<br>Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
-            (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
-            (df['date'][i] + ' ' + df['time'][i]), # Гринвич
-            df['K'][i],df['lat'][i],df['lon'][i],
-            (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ),
-    else: # содержимое hover для остальных событий        
-        textif='Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
-            (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
-            (df['date'][i] + ' ' + df['time'][i]), # Гринвич
-            df['K'][i],df['lat'][i],df['lon'][i],
-            (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ), 
-    fig.add_trace(go.Scattermapbox(
-        lat=[df['lat'][i]],
-        lon=[df['lon'][i]],
-        mode='markers',
-        text=textif,
-        hoverinfo=('text'),
-        hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
-        marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*10), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
-                                        color=('red' if i!=0 else 'yellow' ), 
-                                        opacity=(0.5 if i!=0 else 0.9),),
-        # блок нужно оптимизировать        
-        name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
-                + str(dfdt.strftime("%X")) + " "
-                + " Класс: " 
-                + df['K'][i] + " ",
-    ))
+if df != {'date': [], 'time': [], 'lat': [], 'lon': [], 'K': [], 'Ks': [], 'affect': []}:
+    # Поочередное нанесение отдельного маркера с отдельной легендой
+    for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
+        dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") # расшифровка в формат datetime
+        dfdt=dfdt+timedelta(hours=sht) # смещение для проверки местной текущей даты
+        tddt=datetime.today()+timedelta(hours=sht) # переменная текущей даты
+        if i==0: # содержимое hover для последнего события (лучше переделать в template)
+            textif='Последнее землетрясение<br>Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+                (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
+                (df['date'][i] + ' ' + df['time'][i]), # Гринвич
+                df['K'][i],df['lat'][i],df['lon'][i],
+                (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ),
+        else: # содержимое hover для остальных событий        
+            textif='Дата и время местные: {} <br>Дата и время по Гринвичу: {} <br>Энергетический класс: {} <br>Координаты: {} {}<br>Затронутые населенные пункты: {}'.format(
+                (str(dfdt.date()) + ' ' + str(dfdt.strftime("%X"))), # местное
+                (df['date'][i] + ' ' + df['time'][i]), # Гринвич
+                df['K'][i],df['lat'][i],df['lon'][i],
+                (df['affect'][i] if df['affect'][i] != ' ' else 'нет данных') ), 
+        fig.add_trace(go.Scattermapbox(
+            lat=[df['lat'][i]],
+            lon=[df['lon'][i]],
+            mode='markers',
+            text=textif,
+            hoverinfo=('text'),
+            hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
+            marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*10), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
+                                            color=('red' if i!=0 else 'yellow' ), 
+                                            opacity=(0.5 if i!=0 else 0.9),),
+            # блок нужно оптимизировать        
+            name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
+                    + str(dfdt.strftime("%X")) + " "
+                    + " Класс: " 
+                    + df['K'][i] + " ",
+        ))
+else:
+    fig.add_annotation(xref="paper", yref="paper",
+                x=0.2, y=0.45,
+                showarrow=False,
+                text = 'Отсутствуют данные на источнике',                
+                font=dict(family="Arial", size=40, color="#ffffff"),
+                align="left",
+                bordercolor="#c7c7c7",
+                borderwidth=2,
+                borderpad=4,
+                bgcolor="#000000",
+                opacity=1,
+                xanchor='left',
+                yanchor='bottom',
+                )
 
 # переменные цвета
 colors = {
