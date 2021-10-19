@@ -32,7 +32,10 @@ r.encoding = r.apparent_encoding # проверка содержимого на 
 soup = BeautifulSoup(r.text, "html.parser") # создаем whole-doc-объект soup
 
 # Скрапинг через marker hovers:
-areas = soup.map.find_all('area') # достаем всё содержимое по тегу area
+try:
+    areas = soup.map.find_all('area')  # достаем всё содержимое по тегу area
+except Exception:
+    areas = [] # в случае отсутствия тега map (пустая страница) подменяем данные на None 
 df={'date':[],'time':[],'lat':[],'lon':[],'K':[],'Ks':[], 'affect':[]} # заготовка словаря под датафрейм
 for area in areas: #в каждом элементе списка    
     gottitle = area['title'] #находим string title (это не attr!)
