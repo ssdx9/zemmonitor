@@ -56,6 +56,11 @@ for area in areas: #в каждом элементе списка
     ls = ["".join(ll)] # таким образом будет либо пробел, либо значение с пробелом - и list будет сохранять необходимую размерность
     df['affect'].extend(ls)     
 
+op = 1 # стартовое значение opacity для снижения
+for n in range(10):
+    op = round(op-0.07, 2)
+    df['op'].append(op) # подготовленный набор значений opacity
+
 # Отрисовка пустой карты
 fig=px.scatter_mapbox(
     center={'lat':54,'lon':108},   
@@ -109,7 +114,8 @@ if df != {'date': [], 'time': [], 'lat': [], 'lon': [], 'K': [], 'Ks': [], 'affe
             hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
             marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*10), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
                                             color=('red' if i!=0 else 'yellow' ), 
-                                            opacity=(0.5 if i!=0 else 0.9),),
+                                            opacity=df['op'][i]), # динамичный opacity
+                                            #opacity=(0.5 if i!=0 else 0.9),), # статичный opacity  
             # блок нужно оптимизировать        
             name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
                     + str(dfdt.strftime("%X")) + " "
