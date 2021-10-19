@@ -18,8 +18,8 @@ locale.setlocale(locale.LC_ALL, "ru")
 # Блок необходимый для gunicorn
 app = dash.Dash(__name__)
 server = app.server
-mapbox_token = os.environ.get('mapbox_token') # из переменной среды
-# mapbox_token = open(".mapbox_token").read() # локально
+# mapbox_token = os.environ.get('mapbox_token') # из переменной среды
+mapbox_token = open(".mapbox_token").read() # локально
 
 app.title = "Монитор землетрясений"
 
@@ -36,7 +36,7 @@ try:
     areas = soup.map.find_all('area')  # достаем всё содержимое по тегу area
 except Exception:
     areas = [] # в случае отсутствия тега map (пустая страница) подменяем данные на None 
-df={'date':[],'time':[],'lat':[],'lon':[],'K':[],'Ks':[], 'affect':[]} # заготовка словаря под датафрейм
+df={'date':[],'time':[],'lat':[],'lon':[],'K':[],'Ks':[], 'affect':[], 'op':[]} # заготовка словаря под датафрейм
 for area in areas: #в каждом элементе списка    
     gottitle = area['title'] #находим string title (это не attr!)
     df['date'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
