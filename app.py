@@ -87,7 +87,7 @@ for l in range(len(dfcities)-1,-1,-1): # обратное нанесение, ч
         marker=go.scattermapbox.Marker(size=dfcities['sign'][l], color='#242424', opacity=1),
     ))
 
-if df != {'date': [], 'time': [], 'lat': [], 'lon': [], 'K': [], 'Ks': [], 'affect': []}:
+if df['date'] != []: # проверка на непустой dataframe
     # Поочередное нанесение отдельного маркера с отдельной легендой
     for i in range(9,-1,-1): # в обратном порядке для того, чтобы последнее событие было на сверху (помещено на plot последним)
         dfdt=datetime.strptime((str(df['date'][i]) + ',' + str(df['time'][i])), "%Y-%m-%d,%H:%M:%S") # расшифровка в формат datetime
