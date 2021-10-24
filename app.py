@@ -112,7 +112,7 @@ if df['date'] != []: # проверка на непустой dataframe
             text=textif,
             hoverinfo=('text'),
             hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
-            marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*10), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
+            marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*5), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
                                             color=('red' if i!=0 else 'yellow' ), 
                                             opacity=df['op'][i]), # динамичный opacity
                                             #opacity=(0.5 if i!=0 else 0.9),), # статичный opacity  
