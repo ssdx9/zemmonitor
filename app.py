@@ -27,9 +27,13 @@ sht=8 # переменная смещения времени
 
 # Парсинг данных со старого сайта
 url = "http://seis-bykl.ru/index.php?ma=1"
-r = requests.get(url)
-r.encoding = r.apparent_encoding # проверка содержимого на кодировку и переключение на неё
-soup = BeautifulSoup(r.text, "html.parser") # создаем whole-doc-объект soup
+try:
+    r = requests.get(url) 
+    r.encoding = r.apparent_encoding # проверка содержимого на кодировку и переключение на неё
+    soup = BeautifulSoup(r.text, "html.parser") # создаем whole-doc-объект soup 
+except requests.exceptions.ConnectionError as error: # подавление exception в случае недоступности url
+    print("Can't complete request! Message: ", error)
+    pass
 
 # Скрапинг через marker hovers:
 try:
