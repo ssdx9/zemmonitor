@@ -47,10 +47,11 @@ for area in areas: #в каждом элементе списка
     df['time'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
     coords = re.findall(r"\b\d{2,}[.]\d{2,}\b", gottitle)
     df['lat'].append(coords[0])
-    df['lon'].append(coords[1])
-    df['K'].extend(re.findall(r"\d{1,2}[.]\d{1}\b", gottitle))   
-    Ks = re.findall(r"\d{1,2}[.]\d{1}\b", gottitle) # получаем K
-    Ks = int(((float(Ks[0])-8.6)**2)*10000) # подбираем размерность для size    
+    df['lon'].append(coords[1])        
+    K = re.findall(r"\d{1,2}[.|,]\d{1}\b", gottitle) # распознание K
+    K = K[0].replace(",",".") # защита от ошибки ввода через запятую
+    df['K'].append(float(K))
+    Ks = int(((float(K)-8.6)**2)*10000) # подбираем размерность для size    
     NN = []
     NN.append(Ks)    
     df['Ks'].extend(NN) # Ks нужен для регулировки размеров для scattermapbox, потому что size только int и str(?)
@@ -124,7 +125,7 @@ if df['date'] != []: # проверка на непустой dataframe
             name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
                     + str(dfdt.strftime("%X")) + " "
                     + " Класс: " 
-                    + df['K'][i] + " ",
+                    + str(df['K'][i]) + " ",
         ))
 else:
     fig.add_annotation(xref="paper", yref="paper",
