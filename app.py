@@ -41,7 +41,7 @@ try:
 except Exception:
     areas = [] # в случае отсутствия тега map (пустая страница) подменяем данные на None 
 df={'date':[],'time':[],'lat':[],'lon':[],'K':[],'Ks':[], 'affect':[], 'op':[]} # заготовка словаря под датафрейм
-for area in areas: #в каждом элементе списка    
+for area in areas: 
     gottitle = area['title'] #находим string title (это не attr!)
     df['date'].extend(re.findall(r"\d{4}-\d{2}-\d{2}", gottitle))
     df['time'].extend(re.findall(r"\d{2}:\d{2}:\d{2}", gottitle))
@@ -61,10 +61,13 @@ for area in areas: #в каждом элементе списка
     ls = ["".join(ll)] # таким образом будет либо пробел, либо значение с пробелом - и list будет сохранять необходимую размерность
     df['affect'].extend(ls)     
 
+
+""" # Динамичный opacity для старых событий
 op = 1 # стартовое значение opacity для снижения
 for n in range(10):
     op = round(op-0.07, 2)
     df['op'].append(op) # подготовленный набор значений opacity
+ """
 
 # Отрисовка пустой карты
 fig=px.scatter_mapbox(
@@ -117,17 +120,17 @@ if df['date'] != []: # проверка на непустой dataframe
             text=textif,
             hoverinfo=('text'),
             hoverlabel={'bgcolor':('black' if i!=0 else 'yellow'), },  # выделенный цвет только для последнего события       
-            marker=go.scattermapbox.Marker(size=((float(df['K'][i])-6)*5), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
+            marker=go.scattermapbox.Marker(size=((float(df['K'][i])-8)*15), # регулировка размера для go.scattermabpox - нужно сделать логарифмически
                                             color=('red' if i!=0 else 'yellow' ), 
-                                            opacity=df['op'][i]), # динамичный opacity
-                                            #opacity=(0.5 if i!=0 else 0.9),), # статичный opacity  
+                                            # opacity=df['op'][i]), # динамичный opacity
+                                            opacity=(0.5 if i!=0 else 0.9),), # статичный opacity  
             # блок нужно оптимизировать        
             name=('Сегодня' if tddt.date()==dfdt.date() else (str(dfdt.day)+str(dfdt.strftime("%b"))) and 'Вчера' if tddt.date()-timedelta(days=1)==dfdt.date() else (str(dfdt.day)+ " " +str(dfdt.strftime("%b")))) + " "  
                     + str(dfdt.strftime("%X")) + " "
                     + " Класс: " 
                     + str(df['K'][i]) + " ",
         ))
-else:
+else: # обработка exception (отсутствие нормальных входящих данных)
     fig.add_annotation(xref="paper", yref="paper",
                 x=0.2, y=0.45,
                 showarrow=False,
