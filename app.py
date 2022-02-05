@@ -77,6 +77,9 @@ fig=px.scatter_mapbox(
     ) 
 fig.update_layout(mapbox_style="satellite", mapbox_accesstoken=mapbox_token)
 
+# dataframe всех населенных пунктов
+dfallcities = pd.read_excel("БД_НП.xls")
+
 # Слой населенных пунктов
 dfcities = pd.read_excel("cities.xls")
 for l in range(len(dfcities)-1,-1,-1): # обратное нанесение, чтобы начальные пункты оказались поверх
@@ -130,6 +133,31 @@ if df['date'] != []: # проверка на непустой dataframe
                     + " Класс: " 
                     + str(df['K'][i]) + " ",
         ))
+    affcl=[]
+    affgl=[]
+    # процессинг непустых аффектов
+    if df['affect'][i] != ' ': # для непустых событий аффекта
+        affcl.extend(list(filter(None, re.split(r"\d+-\d+б|\d+б" , df['affect'][i])))) # распознаются балльные группы насел.пунктов, формируя affected cities list; filter убирает none-строки из-за split; list их перечисляет
+        affgl.extend(re.findall(r"\d+-\d+б|\d+б", df['affect'][i])) # распознаются баллы для этих групп, формируя affect grade list
+    # процессинг попавшего предыдущим if-блоком содержимого
+    for k in range(len(affcl)): # по кол-ву распознанных балльных групп
+        citl = re.findall(r'[\w-]+', affcl[k]) # распознание названий пунктов - нужно включить пробелы
+        for m in range(len(citl)): # по кол-ву распознанных насел.пунктов
+            for line in range(len(dfallcities['name'])): # по кол-ву насел.пунктов в прикладном файле 
+                if dfallcities['name'][line] == citl[m]: # при обнаружении распознанного названия с именами насел.пунктов в файле
+                    fig.add_trace(go.Scattermapbox( # метка поражения
+                            lat=[dfallcities['lat'][line]],
+                            lon=[dfallcities['lon'][line]],
+                            mode='markers+text',
+                            text='{} {}'.format(citl[m], affgl[k]), # старый текст заменяется на новый текст поражения
+                            textposition="top right",
+                            # textfont=dict(family="Arial",size=dfallcities['sign'][line],color="red"),
+                            textfont=dict(family="Arial",size=14,color="#ff9e9e"),
+                            hoverinfo='none',
+                            marker=go.scattermapbox.Marker(size=10, color='#ff9e9e'),
+                            legendgroup='group-{}'.format(i), # слияние группы меток с меткой вызвавшего их очага - нужно привязать
+                            showlegend=False,
+                    ))
 else: # обработка exception (отсутствие нормальных входящих данных)
     fig.add_annotation(xref="paper", yref="paper",
                 x=0.2, y=0.45,
